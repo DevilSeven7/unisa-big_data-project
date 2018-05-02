@@ -12,7 +12,7 @@ from TweetMonitor import TweetMonitor
 CONFIDENCE = 0.3
 SUPPORT = 20
 HOUR = 3600 #secondi
-WAITING_HOURS = 1
+WAITING_HOURS = 1 #cambiare questo valore per determinare le ore di monitoring
 
 """Questa funzione serve a rimuovere le emoticons dai tweet"""
 def remove_emoji(string):
@@ -92,6 +92,7 @@ print("Searching tweet in the user timeline of ", tweet_user.screen_name)
 
 passed_hours = 0 #contatore delle ore passate a monitorare il tweet
 startmonitoring = datetime.datetime.today() #timestamp del tempo di inizio monitoring
+print("Start monitoring at:", startmonitoring)
 while(True):
     oldtime = time.time() #mi prendo il numero di secondi così dopo posso tenere traccia del tempo che passa.
 
@@ -185,6 +186,7 @@ while(True):
         break
 
 stopmonitoring = datetime.datetime.today()#timestamp del tempo in cui fermiamo il monitoring
+print("Stop monitoring at:", stopmonitoring)
 print(tweet_user.screen_name + " has got +" + str(new_followers_count) + " followers")
 print("\t+", len(tweet_monitors), "Tweets have been tweeted")
 
@@ -201,7 +203,9 @@ for tweetMonitor in tweet_monitors:
     print("The tweet within ", passed_hours, " hours has got:")
     print("\t+", tweetMonitor.get_likes_count(), " likes")
     print("\t+", tweetMonitor.get_retweeters_count(), " retweeters")
-    weight = new_followers_count * ((tweetMonitor.get_likes_count() + tweetMonitor.get_retweeters_count())/100) * WAITING_HOURS/tweetMonitor.get_hour()
+    weight = new_followers_count/tweet_user.followers_count +\
+             tweetMonitor.get_likes_count()/tweetMonitor.get_actual_likes() +\
+             tweetMonitor.get_retweeters_count()/tweetMonitor.get_actual_retweeters()
     print("\t Weight: ", weight)
     print("\tTopic list:", tweetMonitor.get_topics())
 
