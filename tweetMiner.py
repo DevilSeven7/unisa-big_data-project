@@ -1,14 +1,15 @@
 import datetime
 import re
 import time
-import tweepy,json,io
-from tweepy import OAuthHandler
-from tweepy.streaming import StreamListener, Stream
-import twitter
-import time
+
+import json
 import pandas as pd
+import tweepy
+from tweepy import OAuthHandler
+from tweepy.streaming import StreamListener
 
 from TweetMonitor import TweetMonitor
+
 CONFIDENCE = 0.3
 SUPPORT = 20
 HOUR = 3600 #secondi
@@ -16,6 +17,7 @@ WAITING_HOURS = 6 #cambiare questo valore per determinare le ore di monitoring
 
 """Questa funzione serve a rimuovere le emoticons dai tweet"""
 def remove_emoji(string):
+    string = re.sub('[^A-Za-z0-9]+', ' ', string)
     emoji_pattern = re.compile("["
                            u"\U0001F600-\U0001F64F"  # emoticons
                            u"\U0001F300-\U0001F5FF"  # symbols & pictographs
@@ -76,7 +78,7 @@ auth.set_access_token(access_token, access_secret)
 api = tweepy.API(auth)
 
 #Cambiare l'user da seguire
-user = "CocaCola"
+user = "Google"
 tweet_user = api.get_user(screen_name=user)
 print("Searching tweet in the user timeline of ", tweet_user.screen_name)
 
