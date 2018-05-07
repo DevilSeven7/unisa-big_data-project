@@ -12,7 +12,7 @@ from TweetMonitor import TweetMonitor
 CONFIDENCE = 0.3
 SUPPORT = 20
 HOUR = 3600 #secondi
-WAITING_HOURS = 1 #cambiare questo valore per determinare le ore di monitoring
+WAITING_HOURS = 6 #cambiare questo valore per determinare le ore di monitoring
 
 """Questa funzione serve a rimuovere le emoticons dai tweet"""
 def remove_emoji(string):
@@ -76,7 +76,7 @@ auth.set_access_token(access_token, access_secret)
 api = tweepy.API(auth)
 
 #Cambiare l'user da seguire
-user = "Google"
+user = "CocaCola"
 tweet_user = api.get_user(screen_name=user)
 print("Searching tweet in the user timeline of ", tweet_user.screen_name)
 
@@ -124,7 +124,7 @@ while(True):
                                 start_retweeters=prev_retweeters_count,
                                 start_followers_count=prev_followers_count)
     tweet_text = remove_emoji(tweet_status.text) #rimuovo tutto ciò che non è testo
-    #print("Text without emoji:", tweet_text)
+    print("Text without emoji:", tweet_text)
     tweetMonitor.set_text(tweet_text)
     tweetMonitor.evaluate_topic(tweet_text, confidence=CONFIDENCE, support=SUPPORT) #calcolo il topic del tweet
     print("\tTweet topic:", tweetMonitor.get_topics())
@@ -176,6 +176,7 @@ while(True):
         #time.time() restituisce il tempo in secondi.
         if time.time() - oldtime > HOUR:
             passed_hours = passed_hours + 1 #incremento il numero di ore passate
+            oldtime = time.time()
             print("it has been a hour")
             for tweetMonitor in tweet_monitors:
                 tweetMonitor.add_hour() #aggiorno ogni TweetMonitor in modo tale da tenere traccia del tempo di monitoring per ogni tweet
